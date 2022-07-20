@@ -98,9 +98,10 @@ class ModelInference(Resource):
 
         # ex. Output
         ``` json
-        {
-          "finalResult": 210.9470672607422
-        }
+            {
+            "Result": 213.67172241210938,
+            "Condition": "very bad"
+            }
         ```
 
         """

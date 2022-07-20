@@ -22,7 +22,7 @@ class getTestPreproessing(Resource):
 
 from KETIPreDataIngestion.KETI_setting import influx_setting_KETI as ins
 from KETIPreDataIngestion.data_influx import influx_Client_v2 as influx_Client
-DBClient = influx_Client.influxClient(ins.CLUSTDataServer)
+DBClient = influx_Client.influxClient(ins.VibeDataServer2)
 @TestPreprocessing.route('/getData')
 class getDataWithoutCertainOutlier(Resource):
     @TestPreprocessing.doc("Get Data ")
