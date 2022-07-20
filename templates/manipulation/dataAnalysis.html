@@ -1,0 +1,65 @@
+{% extends 'layout.html' %} 
+{% block content%}
+<!-- Begin Page Content -->
+<nav class='navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow'>
+	<ul class="navbar-nav ml-auto">
+		<div>
+			<select id ='select1' class='btn btn-secondary dropdown no-arrow mb-4 '>
+			</select>
+			<select id ='select2' class='btn btn-secondary dropdown no-arrow mb-4 '>
+			</select>
+			<select id ='select3' class='btn btn-secondary dropdown no-arrow mb-4 '>
+			</select>
+			<a href="#" class="btn btn-success dropdown no-arrow mb-4" id='submit'>
+				<i class="fas fa-check"></i>
+			 </a>
+		</div>
+		
+	</ul>
+</nav>
+<div class="container-fluid">
+	<!-- Content Row -->
+	<div class="row">
+		<!-- Content Column -->
+		<div class="col-xl-8 col-lg-7">
+			<!-- Project Card Example -->
+			<div class="card shadow mb-4">
+				<div class="card-header bg-warning text-white shadow ">
+					<h5 class='font-weight-bold'>Measurment Name: {{mm_name}} </h5>
+					<h6 class="text-white-50 small">DB Name: {{db_name}} </h6>
+				</div>
+				<div class="card-body">
+					<div class="container">
+						<div class="card-body"  id='time'>
+							<div id="plot_div">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+						   
+{% endblock %}
+{% block script %}
+
+<script src="https://cdn.plot.ly/plotly-1.2.0.min.js"></script> 
+<script src="https://cdn.jsdelivr.net/npm/danfojs@0.2.3/lib/bundle.min.js"></script>
+
+<script>	
+
+data_index = {{data_index|tojson|safe}}
+json_data = {{json_data|tojson|safe}}	
+
+$( document ).ready(function() {
+	default_div_make(json_data, data_index, 'plot_div' )
+})
+
+function default_div_make(default_data, data_index, id_value ){
+	df = new dfd.DataFrame(default_data, {index:data_index})
+	df.plot(id_value).line()
+}
+</script>
+
+{% endblock %}

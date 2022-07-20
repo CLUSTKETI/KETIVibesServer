@@ -1,0 +1,550 @@
+{% extends 'layout.html' %}
+{% block content%}
+<style>
+	.tg {
+		border-collapse: collapse;
+		border-spacing: 0;
+	}
+
+	.tg td {
+		font-family: Arial, sans-serif;
+		font-size: 14px;
+		overflow: hidden;
+		padding: 20px 20px;
+		word-break: normal;
+	}
+
+	.tg .tg-0lax {
+		text-align: left;
+		vertical-align: top
+	}
+
+	#ms_graph_list {
+		max-height: 650px;
+		overflow-y: scroll;
+		margin-left: 2%;
+	}
+
+	.ms_graph {
+		min-width: 280px !important;
+		min-height: 160px !important;
+	}
+
+	.cluster_info {
+		width: 90px
+	}
+
+	.card-body {
+		min-height: 700px;
+	}
+
+	.result {
+		overflow: auto;
+		max-height: 1000px;
+		width: 50%;
+	}
+
+	#result_area {
+		min-height: 700px !important;
+		max-height: 700px;
+		overflow: auto
+	}
+
+	#result_contents {
+		display: flex;
+	}
+
+	#result_table {
+		width: 50%;
+		padding-left: 10%;
+		padding-top: 0%;
+		height: 70%;
+		max-height: 550px;
+		overflow-x: auto;
+	}
+
+	#select3 {
+		width: 180px !important;
+	}
+
+	.explain {
+		height: 38px;
+		width: 160px !important;
+		font-size: medium;
+		padding: 0 !important;
+	}
+
+	#select1 {
+		width: 180px !important
+	}
+
+	#select2 {
+		width: 180px !important;
+	}
+
+	.number_in {
+		width: 180px !important
+	}
+
+	.option_area {
+		position: sticky;
+		top: 0;
+		background-color: white;
+	}
+
+	/* TABLE */
+	#cluster_table {
+		border-collapse: collapse;
+		border-color: #ccc;
+		border-spacing: 0;
+		width: 70%
+	}
+
+	#cluster_table td {
+		background-color: #fff;
+		/* border-color:#ccc;border-style:solid;border-width:1px; */
+		color: #333;
+		font-size: 14px;
+		overflow: hidden;
+		padding: 9px 18px;
+		word-break: normal;
+	}
+
+	#cluster_table th {
+		background-color: #faf6f6;
+		/* border-color:#ccc;border-style:solid;border-width:1px; */
+		color: #333;
+		font-size: 14px;
+		font-weight: normal;
+		overflow: hidden;
+		padding: 9px 18px;
+		word-break: normal;
+	}
+
+	#cluster_table .tg-ujoh {
+		font-size: 17px;
+		font-weight: bold;
+		text-align: center;
+		vertical-align: top
+	}
+
+	#cluster_table .tg-13pz {
+		font-size: 16px;
+		text-align: center;
+		vertical-align: top
+	}
+</style>
+
+<br>
+<div class="container-fluid">
+	<div class='row'>
+		<div class="col-xl-12 col-lg-12">
+			<div class="card shadow mb-4">
+				<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+					<h6 class="m-0 font-weight-bold text-primary">Measurement</h6>
+				</div>
+				<div class="card-body">
+					<div id="ms_graph_list">
+						<div class="option_area">
+							Data: <select id='select1' class='btn btn-secondary dropdown no-arrow mb-2 '></select>
+							<input type="date" id='select2' value="2021-02-05"
+								class='btn btn-secondary dropdown no-arrow mb-2 ' />
+							Duration (Days):
+							<input type="number" id='select3' value=1
+								class='btn btn-secondary dropdown no-arrow mb-2 number_in' />
+							Original Frequency:
+							<input type="text" disabled id='select8_ex2' value="" class='btn btn-secondary mb-2 ' />
+							Target:
+							<select id='select6' class='btn btn-secondary dropdown no-arrow mb-2 '></select>
+							<br>
+							Consecutive NaN Limit
+							<input type="number" id='select4' value=1
+								class='btn btn-secondary dropdown no-arrow mb-2 number_in' />
+							Total NaN Limit: <input type="number" id='select5' value=10
+								class='btn btn-secondary dropdown no-arrow mb-2 number_in' />
+							<br>
+							Test Frequency (min):
+							<input type="number" id='select7' value=60
+								class='btn btn-secondary dropdown no-arrow mb-2 number_in' />
+							<a href="#" class="btn btn-success dropdown no-arrow mb-2" id='start_cluster'>
+								<i class="fa fa-check" aria-hidden="true" id="start_btn"></i>
+							</a>
+							<hr>
+
+						</div>
+						<table class="tg">
+							<tbody>
+								<tr>
+									<td class="tg-0lax" id="canvas_0"></td>
+									<td class="tg-0lax" id="canvas_1"></td>
+									<td class="tg-0lax" id="canvas_2"></td>
+									<td class="tg-0lax" id="canvas_3"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div class='row'>
+		<div class="col-xl-12 col-lg-12">
+			<div class="card shadow mb-4">
+				<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+					<h6 class="m-0 font-weight-bold text-primary">Clustering</h6>
+				</div>
+				<div class="card-body" id="result_area">
+					<!-- <div id="clustering_result" class='feature_list'>Clustering Result</div> -->
+
+					<div class="d-sm-flex align-items-center justify-content-between mb-4">
+						<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+							<div class="btn-group mr-2" role="group" aria-label="First group" id="clustering">
+								<button type="button" class="btn btn-success cluster_info" id="pattern">pattern</button>
+								<button type="button" class="btn btn-primary cluster_info" id="count">count</button>
+							</div>
+						</div>
+					</div>
+
+					<div id="result_contents">
+						<div class="result">
+							<canvas id="cluster_count" class="cluster_bar"></canvas>
+							<img class="fit-picture" src="" id="cluster_pattern" alt="cluster pattern"
+								style="width:650px">
+						</div>
+
+						<div id="result_table">
+							<table class="tg" id="cluster_table">
+								<thead>
+									<tr>
+										<th class="tg-ujoh">Table Name</th>
+										<th class="tg-ujoh">Cluster Number</th>
+									</tr>
+								</thead>
+								<tbody></tbody>
+							</table>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{% endblock %}
+	{% block script %}
+
+	<script src={{url_for('static', filename="js/Chart.js" )}}></script>
+	<script src={{url_for('static', filename="js/custom_ui.js" )}}></script>
+	<script type="text/javascript" charset="utf8">
+		// ===== const =====
+		const width_ratio = 3 / 14
+		const canvas_cnt = 4
+		const START_BTN = "fa-check"
+		const RETURN_BTN = "fa-reply"
+		const MS_LSIT_URL = '/DataIngestion/measurement_list'
+		const CLUSTERING_URL = '/DataDomainExploration/clustering'
+		const ONE_TABLE_URL = '/DataDomainExploration/preprocessing'
+		const GET_DB_LIST = '/DataIngestion/db_list'
+		// ===== const end =====
+
+		// ===== for graph =====
+		var labels = ['0', '1', '2', '3', '4', '5', '6'];
+		var data = {
+			labels: labels,
+			datasets: [{
+				label: 'Line Graph',
+				backgroundColor: 'rgb(255, 99, 132)',
+				borderColor: 'rgb(255, 99, 132)',
+				data: [],
+			}]
+		};
+		var config = {
+			type: 'line',
+			data: data,
+			options: {}
+		};
+
+		var bar_data = {
+			labels: ['1', '2', '3', '4', '5', '6',],
+			datasets: [{
+				label: 'The Number of tables on cluster',
+				data: [65, 59, 80, 81, 56, 55, 40],
+				backgroundColor: [
+					'rgba(255, 99, 132, 0.2)',
+					'rgba(255, 159, 64, 0.2)',
+					'rgba(255, 205, 86, 0.2)',
+					'rgba(75, 192, 192, 0.2)',
+					'rgba(54, 162, 235, 0.2)',
+					'rgba(153, 102, 255, 0.2)',
+					'rgba(201, 203, 207, 0.2)'
+				],
+				borderColor: [
+					'rgb(255, 99, 132)',
+					'rgb(255, 159, 64)',
+					'rgb(255, 205, 86)',
+					'rgb(75, 192, 192)',
+					'rgb(54, 162, 235)',
+					'rgb(153, 102, 255)',
+					'rgb(201, 203, 207)'
+				],
+				borderWidth: 1
+			}]
+		};
+		var bar_config = {
+			type: 'bar',
+			data: bar_data,
+			options: { scales: { yAxes: [{ display: true, ticks: { suggestedMin: 0, beginAtZero: true } }] } },
+		};
+		// ===== for graph end =====
+
+		// ===== variable =====
+		var selectedDB = '';
+		var selectedMS = '';
+		var cnt = 0;
+		var cluster_res_mode = 0; // 0 = count, 1 = pattern
+		var is_processing = false; // Indicates whether processing is currently in progress or not.
+		var myBarChart;
+		var duration_day
+		var ms_list
+		var width;
+		// ===== variable end =====
+
+		$.get(GET_DB_LIST, function (result) {
+			db_list = result['db_list']
+			var feature1 = db_list
+			makeSelect(feature1, 'select1');
+		})
+
+		$('#select1').on('change', function () {
+			selectedDB = this.value
+			get_url1 = '/DataIngestion/featureListforFirstMS/' + selectedDB
+			$.get(get_url1, function (result) {
+				makeSelect(result["feature_list"], 'select6');
+			})
+			get_url2 = '/DataIngestion/frequencyForFirstMS/' + selectedDB
+			$.get(get_url2, function (result) {
+				$('#select8_ex2').val(result["freq"])
+			})
+			get_url3 = '/DataIngestion/startTimeForFirstMS/' + selectedDB
+			$.get(get_url3, function (result) {
+				$("#select2").val(result.split('T')[0])
+			})
+		});
+
+		$('#pattern').on('click', function () {
+			cluster_res_mode = 1;
+			$("#cluster_count").css("display", "none")
+			$("#cluster_pattern").css("display", "block")
+		});
+
+		$('#count').on('click', function () {
+			cluster_res_mode = 0;
+			$("#cluster_pattern").css("display", "none")
+			$("#cluster_count").css("display", "block")
+		});
+
+		$('#start_cluster').on('click', function () {
+			// console.log(is_processing)
+			// if(is_processing) return
+			make_empty()
+			start_btn = $("#start_btn")
+			if (start_btn.hasClass(START_BTN)) {
+				is_processing = true
+				$("#select6").attr("disabled", true)
+				selectedDB = $('#select1').val()
+				start_time = $("#select2").val()
+				duration_day = $("#select3").val() * 1
+				consecutiveNanLimit = $("#select4").val() * 1
+				totalNaNLimit = $("#select5").val() * 1
+				feature = $("#select6").val()
+				sample = $("#select7").val()
+				if (duration_day == 0) duration_day = 1
+				if (consecutiveNanLimit == 0) consecutiveNanLimit = 10
+				if (totalNaNLimit == 0) totalNaNLimit = 1
+				if (sample == null) sample = "1H"
+
+
+				params = {
+					"db_name": selectedDB,
+				}
+				$.ajax({
+					url: MS_LSIT_URL + '/' + selectedDB,
+					success: function (result) {
+						result = JSON.parse(result)
+						ms_list = result['measurement_list']
+						for (i in ms_list) {
+							params['ms_name'] = ms_list[i]
+							request_post(
+								ONE_TABLE_URL,
+								params,
+								function (result) {
+									print_one_table(result.responseJSON)
+								}
+							)
+						}
+					},
+				})
+				params = {
+					"db_name": selectedDB,
+					"start_time": start_time + " 00:00:00",
+					"nanLimitInfo": { 'type': 'num', 'ConsecutiveNanLimit': consecutiveNanLimit, 'totalNaNLimit': totalNaNLimit },
+					"duration_day": duration_day,
+					"column_names": [feature],
+					"resampling_rate": sample
+				}
+
+				request_post(
+					CLUSTERING_URL,
+					params,
+					function (result) {
+						msg = result.responseJSON
+						print_result(msg)
+						print_result_img(msg)
+					}
+				)
+
+				start_btn.removeClass(START_BTN)
+				start_btn.addClass(RETURN_BTN)
+			}
+			else if (start_btn.hasClass(RETURN_BTN)) {
+				is_processing = false
+				start_btn.removeClass(RETURN_BTN)
+				start_btn.addClass(START_BTN)
+				$("#select6").attr("disabled", false)
+			}
+		})
+
+		function make_empty() {
+			for (i = 0; i < canvas_cnt; ++i) {
+				$("#canvas_" + i).empty()
+			}
+			$('#cluster_count').empty()
+			$("#cluster_table tbody").empty()
+			if (myBarChart != undefined) {
+				myBarChart.destroy()
+			}
+			cnt = 0
+			$('#cluster_pattern').attr("src", "")
+		}
+
+		function fill_table(result) {
+			/*
+				result = {
+					"key1":"value1",
+					"key2":"value2",
+				}
+			*/
+			var real_table = $("#cluster_table tbody")
+			ms = Object.keys(result)
+			ms.forEach(element => {
+				row = $('<tr></tr>')
+				row.append('<td class="tg-13pz">' + element + '</td>')
+				row.append('<td class="tg-13pz">' + result[element] + '</td>')
+				real_table.append(row)
+			});
+			row = $('<tr></tr>')
+			row.append('<td class="tg-13pz">TOTAL</td>')
+			row.append('<td class="tg-13pz">' + ms.length + '</td>')
+			real_table.append(row)
+		}
+
+		function print_result_img(msg) {
+			$("#cluster_pattern").attr("src", 'data:image/png;base64,' + msg["img"]);
+			$("#cluster_pattern").css("width", "100%")
+			$("#cluster_pattern").css("height", "70%")
+		}
+
+		function print_result(msg) {
+			var json_data = msg['data']
+			if (Object.keys(json_data).length <= 0) {
+				is_processing = false
+				return
+			}
+			var table = {
+				"table_name": [],
+				"cluster": []
+			}
+			for (key in json_data) {
+				table["table_name"].push(key)
+				table["cluster"].push(json_data[key])
+			}
+			// fill table
+			fill_table(json_data)
+			var counts = {};
+			var sampleArray = Object.values(json_data);
+			sampleArray.forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
+			temp = $.extend(true, {}, bar_data);
+			temp["labels"] = Object.keys(counts);
+			for (i in temp["labels"]) {
+				temp["labels"][i] = "Cluster " + temp["labels"][i]
+			}
+			temp["datasets"][0]["data"] = Object.values(counts);
+			tempConf = $.extend(true, {}, bar_config);
+			tempConf["data"] = temp
+			myBarChart = new Chart(
+				document.getElementById("cluster_count"),
+				tempConf
+			);
+			area_height = $('#result_area').height()
+			if (cluster_res_mode == 1) {
+				$("#cluster_count").css("display", "none")
+			}
+			is_processing = false
+		}
+
+		function checkFlag(flag) {
+			console.log(flag)
+			if (flag == 1) {
+				// It has all data
+				color = "LightCoral"
+			}
+			else if (flag == 0) {
+				// It has nan data
+				color = "gray"
+			}
+			else {
+				// It doesn't have data
+				color = "BurlyWood"
+			}
+			return color
+		}
+
+		function print_one_table(msg) {
+			canvasName = "#canvas_" + (cnt % canvas_cnt)
+			chartName = "myChart" + cnt
+			ele = '<canvas id="' + chartName + '" class="ms_graph"></canvas>'
+			$(canvasName).append(ele)
+			color = checkFlag(msg["flag"])
+			temp = $.extend(true, {}, data);
+			temp["datasets"][0]["data"] = msg["data"]
+			temp["datasets"][0]["label"] = msg["table"]
+			temp["labels"] = [...Array(msg["data"].length).keys()];
+			temp["datasets"][0]["backgroundColor"] = color
+			temp["datasets"][0]["borderColor"] = color
+			tempConf = $.extend(true, {}, config);
+			tempConf["data"] = temp
+			var myChart = new Chart(
+				document.getElementById(chartName),
+				tempConf
+			);
+			myChart.canvas.parentNode.style.width = width + "px";
+			$("#" + chartName).width(width)
+			cnt += 1;
+		}
+
+		$(document).ready(function () {
+			$("#cluster_pattern").css("display", "none")
+			// var myChart;
+			var graph_part_width = $('#ms_graph_list').width()
+			width = graph_part_width * (width_ratio)
+			window.addEventListener('resize', function (event) {
+				graph_part_width = $('#ms_graph_list').width()
+				width = graph_part_width * (width_ratio)
+				$(".ms_graph").width(width)
+			}, true);
+		});
+	</script>
+
+	{% endblock %}

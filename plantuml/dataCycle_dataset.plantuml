@@ -1,0 +1,79 @@
+@startuml dataCycle_dataset
+
+API -> dataCycleExploration.py : 파라미터 전달
+activate API #B7F0B1
+
+dataCycleExploration.py -> dataCycleExploration.py : 각 파라미터 타입 변환
+activate dataCycleExploration.py #B2EBF4
+deactivate dataCycleExploration.py
+
+
+
+dataCycleExploration.py -> cycle_Module.py : 선택한 Cycle로 Data 나누기
+
+cycle_Module.py -> data_preprocessing.py : Time Frequency 맞추기
+activate data_preprocessing.py #B2EBF4
+cycle_Module.py <- data_preprocessing.py : refined Data
+deactivate data_preprocessing.py 
+
+dataCycleExploration.py <- cycle_Module.py : Cycle Data
+
+
+dataCycleExploration.py -> clean_data_feature.py : 데이터 전처리 및 사용 가능, 불가능 Data 분류
+activate clean_data_feature.py #B2EBF4
+dataCycleExploration.py <- clean_data_feature.py : refinedData, ImputedData 
+deactivate clean_data_feature.py 
+
+API <- dataCycleExploration.py : cycle_info(params)
+deactivate API
+
+
+
+
+@enduml
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+' API -> dataCycleExploration.py : getCycleDataQualityCheckTable(db_client,params)
+' activate API #B7F0B1
+
+' dataCycleExploration.py -> dataCycleExploration.py : getDatawithParam(params)
+' activate dataCycleExploration.py #B2EBF4
+' deactivate dataCycleExploration.py
+
+' ' note left
+' ' [return]
+' ' db_name
+' ' ms_name
+' ' feature_name
+' ' NanInfoForCleanData
+' ' feature_list
+' ' freq_min
+' ' start_time
+' ' end_time
+' ' feature_cycle
+' ' feature_cycle_times
+' ' end note
+
+
+' dataCycleExploration.py -> cycle_Module.py : getCycleselectDataFrame(query_data, feature_cycle, feature_cycle_times)
+' dataCycleExploration.py <-- cycle_Module.py : data
+
+' dataCycleExploration.py -> clean_data_feature.py : getOneCleanDataSetByFeature(data, NanInfoForCleanData)
+' dataCycleExploration.py <-- clean_data_feature.py : refinedData, NaNRemovedData, ImputedData, finalFlag
+
+
+' API <- dataCycleExploration.py : cycle_info(params)
+' deactivate API

@@ -1,0 +1,90 @@
+{% extends 'layout.html' %} 
+{% block content%}
+<style>
+.ms_item{
+	
+	background: #17a2b8;
+	opacity: 0.8;
+	color: white;
+	margin:10px;
+	padding: 35px 15px;
+}
+</style>
+<nav class='navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow'>
+	<ul class="navbar-nav ml-auto">
+	</ul>
+</nav>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-xl-8">
+			<div class="card shadow rounded-0 h-100">
+				<div class="card-body">
+					<div class="row no-gutters align-items-center ">
+						<div class="col mr-2 mb-3">
+							<h5 class="font-weight-bold text-dark mb-4">
+								Integrated Data
+							</h5>
+						</div>
+					</div>
+					<div id="data_graph"  style="width: 100%; height:500px"></div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xl-3">
+			<div class="card shadow rounded-0 h-100 py-2">
+				<div class="card-body">
+					<div class="row no-gutters align-items-center ">
+						<div class="col mr-2 del-int">
+							<h5 class="font-weight-bold text-dark">Frequency</h5>
+							<div class="h5 mb-4 font-weight-bold text-gray-800" id="frequency_info"></div>
+							<h5 class="font-weight-bold text-dark">Selected MS</h5>
+							<div class="h5 mb-4 font-weight-bold text-gray-800" id="selected-ms-list"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block script %}
+
+<script src={{url_for('static', filename="js/echarts.min.js")}}></script>
+<script src={{url_for('static', filename="js/echart_manipulation.js")}}></script>
+
+{% if result %}
+<script>
+	result = {{result|tojson|safe}}
+	param = {{param|tojson|safe}}
+</script>
+{% endif %}
+<script>
+
+
+$( document).ready(function() {
+	const value_data = result['value'];
+	const index_data = result['index'];
+	const option = DFtoLinePlotData(value_data, index_data );
+	
+	var myChart = echarts.init(document.getElementById('data_graph'));
+    myChart.setOption(option);
+
+	const frequency_info =  $('#frequency_info');
+	frequency_info.html('<h6> <code>'+param['re_frequency_sec']+ '</code> seconds </h6>');
+	let db_info_list = param['intDataInfo']['db_info'];
+	
+	let selected_ms_list, m_item, db_info, time_info
+	db_info_list.forEach(function(item,index){
+		selected_ms_list = $('#selected-ms-list')
+		m_item = $('<div></div>')
+		db_info = '<h6> '+ index +'. '+item.db_name+' : '+item.measurement+'</h6>';
+		time_info = '<h6>'+item.start+' ~ '+item.end+'</h6>';
+		m_item.html(db_info+time_info);
+		m_item.addClass('ms_item');
+		selected_ms_list.append(m_item);
+	});
+});
+
+
+</script>
+{% endblock %}

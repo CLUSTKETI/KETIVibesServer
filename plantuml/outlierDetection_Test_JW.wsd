@@ -1,0 +1,40 @@
+@startuml
+
+group Initialization [DB/MS/Time setting]
+   User->Front: db_name selection
+   Front -> DataIngestion: /measurement_list/db_name
+   DataIngestion--> Front :ms_list
+   Front->User: Show ms_list
+   User-->Front: ms_name selection
+   Front->DataIngestion:/startTime/db_name/ms_name
+   DataIngestion-->Front:MSstarTime
+   Front->DataIngestion:/lastTime/db_name/ms_name
+   DataIngestion-->Front:MS lastTime
+   Front-->User: Show start, end time
+end
+
+   User->Front: data auery: DB,MS,Start,EndTime
+   Front->DataIngestion:/dataIngestionByDuration
+   DataIngestion-->Front: data
+   Front-->User: Show Original Data
+
+group dataPreprocessing [preprocessing method/parameter]
+   User->Front: refinement request
+   Front -> DataPreprocessing: request
+   Front <-- DataPreprocessing: refined data
+   Front-->User: Show processed data
+   User->Front: CertainOutlier remove
+   Front-> DataPreprocessing: request
+   DataPreprocessing -->Front: processed data
+   Front-->User: Show processed data
+   User->Front: UnCertainOutlier remove
+   Front->DataPreprocessing: request
+   DataPreprocessing -->Front: processed data
+   Front-->User: Show processed data
+   User->Front: Imputation
+   Front->DataPreprocessing: imputataion request
+   DataPreprocessing -->Front: processed data
+   Front-->User: Show processed data
+end
+
+@enduml

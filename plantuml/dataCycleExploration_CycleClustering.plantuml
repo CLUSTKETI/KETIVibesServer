@@ -1,0 +1,73 @@
+@startuml CycleClustering
+
+activate Front #B2CCFF
+Front -> clusteringByCycle : (params)
+activate clusteringByCycle #FFBBBB
+
+note left
+  [params]
+  db_name
+  ms_name
+  start time
+  end time
+  cycle
+  cycle times
+  resampling rate
+  nanLimit Info
+end note
+
+
+clusteringByCycle -> clusteringByCycle : getDatawithParam(params)
+activate clusteringByCycle
+deactivate clusteringByCycle
+
+clusteringByCycle -> clusteringByCycle : get--(dataset)
+activate clusteringByCycle
+note left
+   [dataset]
+   {'index_name1' : data, 'index_name2' : data, ... }
+end note
+deactivate clusteringByCycle
+
+clusteringByCycle -> CleanFeatureData : (feature_list, freq_min)
+activate CleanFeatureData #FFFAAA
+
+clusteringByCycle -> CleanFeatureData : setDataDuration(query_start_time, query_end_time)
+activate CleanFeatureData
+
+CleanFeatureData --> clusteringByCycle : (query_start_time, query_end_time)
+deactivate CleanFeatureData
+
+
+clusteringByCycle -> CleanFeatureData : getMultipleCleanDataSetsByFeature(dataSet,NanInfoForCleanData)
+activate CleanFeatureData
+
+
+
+deactivate CleanFeatureData
+
+
+
+
+
+CleanFeatureData --> clusteringByCycle : (dataSet, dataSetName, NaNRemovedDataSet, imputedDatasetName, ImputedDataSet)
+deactivate CleanFeatureData
+
+clusteringByCycle -> interface : clusteringByMethod(feature_dataset, feature_datasetName, model)
+activate interface #E8D9FF
+
+interface --> clusteringByCycle : result, figdata, figdata2
+deactivate interface
+
+
+
+
+
+clusteringByCycle --> Front : {'data':result, 'img':figdata}
+deactivate clusteringByCycle
+
+
+
+deactivate Front
+
+@enduml

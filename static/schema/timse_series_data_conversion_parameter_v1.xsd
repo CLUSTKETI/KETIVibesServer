@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2012 (x64) (http://www.altova.com) by Kyung Won Kim (KETI(KOREA ELECTRONICS TECHNOLOGY INSTITUTE)) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="model_data" type="model_dataType"/>
+	<xs:complexType name="model_dataType">
+		<xs:sequence>
+			<xs:element name="model_information" type="model_informationType"/>
+			<xs:element name="Partial_informatoin" type="Partial_informatoinType"/>
+			<xs:element name="Train_information" type="Train_informationType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="model_informationType">
+		<xs:sequence>
+			<xs:element name="general" type="generalType"/>
+			<xs:element name="history" type="historyType"/>
+			<xs:element name="specification" type="specificationType"/>
+			<xs:element name="files" type="filesType"/>
+			<xs:element name="description" type="descriptionType"/>
+			<xs:element name="Other_Inforamtion" type="Other_InforamtionType"/>
+			<xs:element name="usage" type="usageType"/>
+			<xs:element name="model_input" type="model_inputType"/>
+			<xs:element name="model_output" type="model_outputType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="generalType">
+		<xs:sequence>
+			<xs:element name="id" type="xs:byte"/>
+			<xs:element name="license" type="xs:string"/>
+			<xs:element name="manufacturer" type="xs:string"/>
+			<xs:element name="name" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="historyType">
+		<xs:sequence>
+			<xs:element name="date_first_available" type="xs:date"/>
+			<xs:element name="historys" type="historysType"/>
+			<xs:element name="this_version" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="historysType">
+		<xs:sequence>
+			<xs:element name="element" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="specificationType">
+		<xs:sequence>
+			<xs:element name="performance" type="performanceType"/>
+			<xs:element name="size" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="performanceType">
+		<xs:sequence>
+			<xs:element name="condition" type="conditionType"/>
+			<xs:element name="run_time" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="conditionType">
+		<xs:sequence>
+			<xs:element name="CPU" type="xs:string"/>
+			<xs:element name="GPU" type="xs:string"/>
+			<xs:element name="memory" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="filesType">
+		<xs:sequence>
+			<xs:element name="element" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Other_InforamtionType">
+		<xs:sequence>
+			<xs:element name="price" type="level_type"/>
+			<xs:element name="quality" type="level_type"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="level_type">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="high"/>
+			<xs:enumeration value="medium"/>
+			<xs:enumeration value="low"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="descriptionType">
+		<xs:sequence>
+			<xs:element name="element" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="usageType">
+		<xs:sequence>
+			<xs:element name="element" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="model_inputType">
+		<xs:sequence>
+			<xs:element name="configuration_parameters" type="configuration_parametersType"/>
+			<xs:element name="input_type" type="input_formatType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="configuration_parametersType">
+		<xs:sequence>
+			<xs:element name="image_input" type="image_inputType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="image_inputType">
+		<xs:sequence>
+			<xs:element name="channels" type="xs:integer"/>
+			<xs:element name="height" type="xs:integer"/>
+			<xs:element name="width" type="xs:integer"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="input_formatType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="image"/>
+			<xs:enumeration value="audio"/>
+			<xs:enumeration value="data"/>
+			<xs:enumeration value="sensors"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="model_outputType">
+		<xs:sequence>
+			<xs:element name="output_specification" type="xs:string"/>
+			<xs:element name="output_type" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Train_informationType">
+		<xs:sequence>
+			<xs:element name="DL_librariess" type="DL_librariessType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DL_librariessType">
+		<xs:sequence>
+			<xs:element name="element" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Partial_informatoinType">
+		<xs:sequence>
+			<xs:element name="mode" type="model_modeType"/>
+			<xs:element name="partial_num" type="xs:int"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="model_modeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Full"/>
+			<xs:enumeration value="Partial"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

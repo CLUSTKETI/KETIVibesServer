@@ -1,0 +1,97 @@
+@startuml CycleDataSet
+
+' 한줄 주석
+/' 여러줄 주석 '/
+' 실행 -> alt + D
+
+' FrontEnd
+Front -> CycleDataSet : (params)
+activate CycleDataSet #FFBBBB
+
+note left
+  [params]
+  db_name
+  ms_name
+  start time
+  end time
+  cycle
+  cycle times
+  resampling rate
+  nanLimit Info
+end note
+
+' REST API
+' BackEnd
+' dataCycleExploration.py - CycleDataSet
+CycleDataSet -> CycleDataSet : getDatawithParam(params)
+activate CycleDataSet
+deactivate CycleDataSet
+
+' clean_feature_data - CleanFeatureData
+CycleDataSet -> CleanFeatureData : (feature_list, freq_min)
+activate CleanFeatureData #FFFAAA
+
+CycleDataSet -> CleanFeatureData : setDataDuration(query_start_time, query_end_time)
+activate CleanFeatureData
+
+CleanFeatureData --> CycleDataSet : (query_start_time, query_end_time)
+deactivate CleanFeatureData
+
+
+CycleDataSet -> CleanFeatureData : getOneCleanDataSetByFeature(data,NanInfoForCleanData)
+
+CleanFeatureData -> CleanFeatureData : _setDataWithSameDuration(data)
+activate CleanFeatureData
+deactivate CleanFeatureData
+
+CleanFeatureData -> CleanFeatureData : _getPreprocessedData(data)
+activate CleanFeatureData
+deactivate CleanFeatureData
+
+CleanFeatureData -> CleanFeatureData : removeNaNData(DataWithMoreNaN, NanInfoForCleanData)
+activate CleanFeatureData
+deactivate CleanFeatureData
+
+
+
+loop feature in feature_list
+   CleanFeatureData -> CleanFeatureData: finalFlag[feature] = -1
+   alt (feature in data.columns) and (len(refinedData) >0
+      CleanFeatureData -> CleanFeatureData : finalFalg[feature] = 0
+      alt feature in NaNRemovedData.columns
+         CleanFeatureData -> CleanFeatureData : finalFalg[feature] = 1
+      end
+   end
+end
+
+
+' dataCycleExploration.py - CycleDataSet
+CleanFeatureData --> CycleDataSet : (refinedData, NaNRemovedData, ImputedData, finalFlag)
+deactivate CleanFeatureData
+
+alt feature_cycle == 'cycle'
+   CycleDataSet -> CycleDataSet : data = CycleData().get~~~(query_data, feature_cycle_times, False)
+end
+
+loop i in len(data)
+   alt flag == 0
+   end
+   alt flag == 1
+   end
+end
+
+
+CycleDataSet --> Front : cycle_info
+deactivate CycleDataSet
+
+note left
+  [return]
+  { index1 :
+           {'time_index':index_name, 'data':feature_data, 'flag':flag},
+    index2 : 
+           {'time_index':index_name,'data':feature_data, 'flag':flag},
+     .....
+    }
+end note
+
+@enduml

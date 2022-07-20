@@ -1,0 +1,520 @@
+{% extends 'layout.html' %}
+{% block content%}
+<style>
+.top-card-body{min-height: 400px; max-height: 400px; overflow: auto;}
+.bottom-card-body{min-height: 900px; max-height: 900px; overflow: auto;}
+.model_param_btn{margin: 3px;}
+.integration_select_body{min-height: 300px; max-height: 300px; overflow: auto;}
+/*
+.tg  {border-collapse:collapse;border-spacing:0; width: 80%; margin-left: 10%;}
+.tg td{background-color:#fff;color:#333;font-size:16px;font-weight:normal;overflow:hidden;padding:9px 18px;}
+.tg th{background-color:#faf6f6;color:#333;font-size:16px;font-weight:bold;overflow:hidden;padding:9px 18px;word-break:normal;}
+.tg .tg-f4iu{border-color:inherit;font-size:16px;text-align:center;vertical-align:top}
+*/
+</style>
+
+<link href={{url_for('static', filename="css/dataselection.css")}} rel="stylesheet">
+<link  type="text/css" media="all" href={{url_for('static', filename="css/daterangepicker.css")}} rel="stylesheet"/>
+
+<div class="container-fluid mt-2">
+	<!-- INTEGRATION SELECTION START -->
+	<div class="">
+		<div class="row">		
+			<div class="col-xl-12">
+				<div class="navbar navbar-expand navbar-dark bg-dark ">
+					<div class="navbar-collapse collapse justify-content-between align-items-center w-100">
+						<ul class="nav navbar-nav">
+							<!-- Nav Item - Alerts -->
+							<li class="nav-item dropdown no-arrow mx-1">
+								<a class="nav-link dropdown-toggle h5" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									Database
+									<!--<i class="fas fa-bell fa-database font-weight-bold font-info"></i>-->
+									<!-- Counter - Alerts -->
+									<span class="badge badge-danger badge-counter " id="db-counter"></span>
+								</a>
+								<!-- Dropdown - Alerts -->
+								<div class="dropdown-list dropdown-menu shadow animated--grow-in p-3" aria-labelledby="alertsDropdown">
+									<nav class="top_button_nav">
+										<span class="h5 mb-0 font-weight-bold text-gray-800">DB List</span>
+										<div id="db_list" class="btn-group-vertical d-grid gap-2">
+											
+										</div>
+									</nav>
+									<a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+								</div>
+							</li>							
+						</ul>
+
+						<ul class="nav navbar-nav flex-row justify-content-start flex-nowrap">
+							<li class="nav-item ml-auto"> 
+								<button class="btn btn-info btn-circle h5" id="merge"><i class="fas fa-sign-out-alt"></i></button>
+							</li>
+						</ul>
+					</div>
+					<div class="topbar-divider d-none d-sm-block"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="">
+		<div class="row mt-3">
+			<div class="col-xl-8">
+				<div class="row">
+					<div class="col-xl-8">
+						<div class="card shadow rounded-0 h-100 ">
+							<div class="card-body integration_select_body">
+								<div class="row no-gutters align-items-center ">
+									<div class="col mr-2">										
+										<span class="text-dark text-uppercase font-weight-bold mb-1">
+											Measurement List
+										</span>
+										<div>
+											<span class ='text-dark' id='db-name'></span>
+											<span class="badge badge-warning badge-counter " id="ms-counter"></span>
+										</div>
+										<div class="border mt-2 p-1 text-gray-800" id="ms-list">			
+									</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-4">
+						<div class="card shadow rounded-0 h-100">
+							<div class="card-body integration_select_body" >
+								<div class="row no-gutters align-items-center ">
+									<div class="col mr-2 del-int">
+										<span class="text-dark text-uppercase mb-1 font-weight-bold">
+											Selected MS
+										</span>
+										<div class="text-gray-800" id="selected-ms-list" ></div>
+									
+										<div class='del-int-sub'>											
+											<a href="#" class="btn btn-primary btn-block rounded-0" id='delete'>
+												<i class="fas fa-bell fa-trash"></i>
+												Delete
+											</a>											
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>				
+			</div>
+			<div class="col-xl-4">
+				<div class="row">
+					<div class="col-xl-12">
+						<div class="card shadow rounded-0 h-100 ">
+							<div class="card-body integration_select_body">
+								<div class="row no-gutters align-items-center ">
+									<div class="col mr-2">
+										<span class ='font-weight-bold text-dark' ></span>
+										<span class="text-dark text-uppercase font-weight-bold mb-1" id ="overapped">overlap time</span>
+										<div class="mt-4" id="time"></div>										
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+	</div>
+	<!-- INTEGRATION SELECTION END -->
+
+
+
+	<!-- First row -->
+	<div class="row mt-3">
+		<!-- Col 1 -->
+		<div class="col-xl-4 col-lg-5">
+			<div class="card shadow rounded-0">
+				<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+					<h5 class="font-weight-bold text-gray-900">Model Select</h5>
+				</div>
+				
+				<div class="card-body top-card-body" >
+					<pre id="model_info">Selected TARGET : <code id="target_show"></code></pre>
+					<div id="model_select_area"></div>
+					<a href="#" class="btn btn-success dropdown no-arrow" id='back_btn' style="float:right;display:none">
+						<i class="fa fa-reply" aria-hidden="true" >&nbsp; refresh</i>
+					</a>
+				</div>
+			</div>
+		</div>
+		<!-- Col 1 End -->
+
+		<!-- Col 2 -->
+		<div class="col-xl-8 col-lg-7">
+			<div class="card shadow rounded-0">
+				<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+					<h5 class="font-weight-bold text-gray-900">Inference Parameter</h5>
+				</div>
+
+				<div class="card-body top-card-body">
+					<pre><code id="inference_param_info"></code></pre>
+					<a href="#" class="btn btn-success dropdown no-arrow" id='infer_start_btn' style="float:right;display:none">
+						<i class="fa fa-check" aria-hidden="true" >&nbsp;inference start</i>
+					</a>
+				</div>
+			</div>
+		</div>
+		<!-- Col 2 End -->
+	</div>
+	<!-- First row End -->
+
+	<!-- Second row -->
+	<div class="row mt-3">
+		<!-- Col 1 -->
+		<div class="col-lg-12 mb-12">
+			<div class="card shadow rounded-0">
+				<div class="card-header py-3">
+					<h5 class="font-weight-bold text-gray-900">Inference Result</h5>
+				</div>
+				<div class="card-body p-4">
+					<!-- <div id="result">INFERENCED DATA</div> -->
+					<table class="table table-striped">
+						<thead>
+						  <tr>
+							<th class="tg-f4iu">Date</th>
+							<th class="tg-f4iu" id="target_feature_in_table">Predicted Value</th>
+						  </tr>
+						</thead>
+						<tbody>
+						  <tr>
+							<td class="tg-f4iu" id="result_date"></td>
+							<td class="tg-f4iu" id="result_value"></td>
+						  </tr>
+						</tbody>
+					</table>
+					<img class="fit-picture" src="" id="inference_result_ori" alt="" style="width:100%">
+					<img class="fit-picture" src="" id="inference_result" alt="" style="width:100%">
+				</div>
+			</div>
+		</div>
+		<!-- Col 1 End -->
+	</div>
+	<!-- Second row End -->
+</div>
+						   
+{% endblock %}
+{% block script %}
+
+<script src={{url_for('static', filename="js/custom_ui.js")}}></script> 
+<script src={{url_for('static', filename="js/datatime_calculation.js")}}></script>  
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js"></script>
+<script type="text/javascript" src={{url_for('static', filename="js/daterangepicker.js")}}></script>
+<script>
+
+hierarchy_dir = {{hierarchy_dir|tojson|safe}}
+
+var my_architecture
+var partial_dataset_hash
+var my_target
+var my_method
+var my_param_hash
+var my_model_param
+var targets
+var selected_list = {}
+
+const FILE_POST_URL = '/DataLearning/params'
+const LSTM_INFERENCE_URL = '/DataLearning/LSTMInference'
+const GET_HASH_URL = '/DataLearning/integration/hash'
+const GET_DB_URL = '/DataIngestion/db_list'
+const UNSELECTED_BACKGROUND = "#858796"
+const SELECTED_BACKGROUND = "crimson"
+const DATE_SELECTION_ID = 'input[name="daterange"]'
+
+$(document).ready(function() {
+
+	$.get(GET_DB_URL, function(result){
+		result = JSON.parse(result);
+		data = result['result'];
+
+		$('#db-counter').html(data.length);
+
+		data.forEach(function(item){
+			style_result = get_db_style(item.toLowerCase());
+			var db_list = $('#db_list');
+			var a_tag = $('<button></button>');
+			$(a_tag).addClass('btn btn-icon-split btn-custom btn-db justify-content-md-start ' + style_result.color_style);
+			var span_tag1 =$('<span></span>');
+			$(span_tag1).addClass('icon text-white-50');
+			var i_tag = $('<i></i>');
+			$(i_tag).addClass('fas '+style_result.icon_style);
+
+			$(span_tag1).append(i_tag);
+			$(a_tag).append(span_tag1);
+			
+			var span_tag2 =$('<span></span>');
+			$(span_tag2).html(item);
+			$(span_tag2).addClass('text font-white ');
+
+			$(a_tag).append(span_tag2);
+			$(db_list).append(a_tag);
+		});
+	})
+
+	// partial_dataset_hash = hash_set["partial_dataset_hash"]
+	// my_architecture = hierarchy_dir[partial_dataset_hash]
+	
+	// if(my_architecture==undefined) return
+
+	// targets = Object.keys(my_architecture)
+	// init_model_select_area(targets)
+
+});
+
+function init_model_select_area(targets){
+	for(i in targets){
+		target_name = targets[i]
+		temp = make_button(i+"_target_btn","target_btn",target_name,target_name)
+		$("#model_select_area").append(temp).append("<br>")
+	}
+	update_btn_clicks()
+}
+
+function update_btn_clicks(){
+	$('.target_btn').on('click', function(){
+		$('#back_btn').css("display","inline")
+		// contents : my_architecture[my_target], type_name : "target", type_value : my_target, next_type_name : "method"
+		my_target = $(this).attr('value')
+		on_click_for_model(my_architecture[my_target],"target",my_target,"method")
+
+		$('.method_btn').on('click', function(){
+			// contents : my_architecture[my_target][my_method], type_name : "method", type_value : my_method, next_type_name : "param_hash"
+			my_method = $(this).attr('value')
+			on_click_for_model(my_architecture[my_target][my_method],"method",my_method,"param_hash")
+
+			$('.param_hash_btn').on('click', function(){
+				my_param_hash = $(this).attr('value')
+				contents = my_architecture[my_target][my_method][my_param_hash]
+				$("#param_hash_show").text(my_param_hash)
+				$("#model_select_area").empty()
+
+				model_path = "/"+partial_dataset_hash+"/"+my_target+"/"+my_method+"/"+my_param_hash+"/"
+				for(f in contents){
+					if(contents[f].endsWith('param.json')){
+						console.log(model_path+contents[f])
+						post_file_content(model_path+contents[f])
+						$("#infer_start_btn").css("display","inline")
+						break
+					}
+				}
+			})
+		})
+	})
+}
+
+$('#back_btn').on('click', function(){
+	$('#back_btn').css("display","none")
+	$("#infer_start_btn").css("display","none")
+	$("#model_select_area").empty()
+	$("#target_show").empty()
+	$("#model_info").html('<div class="text-dark">Selected TARGET : <code id="target_show"></code></div>')
+	$("#inference_param_info").empty()
+	$(".fit-picture").attr("src","")
+	$("#result_date").empty()
+	$("#result_value").empty()
+	$("#target_feature_in_table").text("Predicted Value")
+	init_model_select_area(targets)
+})
+
+$('#infer_start_btn').on('click', function(){
+	// start inference
+	if(my_model_param==undefined){
+		console.log("Not Yet")
+		return
+	}
+	console.log(my_model_param)
+	$("#target_feature_in_table").text("Predicted Value("+my_model_param["target_feature"]+")")
+	run_inference(my_model_param)
+})
+
+function on_click_for_model(contents,type_name,type_value,next_type_name){
+	// model param 이 선택되었을 때, UI 를 바꾸는 함수
+	var content_keys = Object.keys(contents)
+	$("#"+type_name+"_show").text(type_value)
+	$("#model_info").append("<br>")
+	$("#model_info").append('<code >Selected '+next_type_name.toUpperCase()+' : </code><code id="'+next_type_name+'_show"></code>')
+	$("#model_select_area").empty()
+
+	for(m in content_keys){
+		key = content_keys[m]
+		if(next_type_name=="param_hash") temp = make_button(m+"_"+next_type_name+"_btn",next_type_name+"_btn",m*1 + 1,key)
+		else temp = make_button(m+"_"+next_type_name+"_btn",next_type_name+"_btn",key,key)
+		$("#model_select_area").append(temp).append("<br>")
+	}
+}
+
+function make_button(id,btn_class,target_name,target_value){
+	// model param 버튼을 만드는 함수
+	var component = $('<a href="#" class="btn btn-light btn-icon-split model_param_btn '+btn_class+'" value='+target_value+'>\
+		<span class="icon text-gray-600"><i class="fas fa-arrow-right"></i></span>\
+		<span class="text" id="'+id+'">'+target_name+'</span></a>')
+	return component
+}
+
+function post_file_content(file_name){
+	// 선택된 model의 params 정보들을 받아오는 함수 
+	param = {"file_name":file_name}
+	request_post(
+		FILE_POST_URL,
+		param,
+		function(result) {
+			my_model_param = result.responseJSON
+			param_info = [my_model_param]
+			param_info.forEach(info => {
+				$("#inference_param_info").append(JSON.stringify(info, null, 2)).append("<br>")
+			});
+		}
+	)
+}
+
+function run_inference(my_model_param){
+	formatted_selected_date=extract_select_date(DATE_SELECTION_ID)
+	param = {"model_param":my_model_param, "test_duration" : {"start":formatted_selected_date[0]+" 00:00:00", "end":formatted_selected_date[1]+" 00:00:00"}}
+	request_post(
+		LSTM_INFERENCE_URL,
+		param,
+		function(result) {
+			console.log(result.responseJSON)
+			infer_result = result.responseJSON
+			$("#result_date").text(infer_result["result_date"])
+			$("#result_value").text(infer_result["result_value"])
+			$("#inference_result").attr("src", 'data:image/png;base64,'+infer_result["mini_img"]);
+			$("#inference_result_ori").attr("src", 'data:image/png;base64,'+infer_result["ori_img"]);
+		}
+	)
+}
+
+
+/* from dataSelection.html start */
+$(document).on('click','.btn-db', function(){
+   db_name = $(this).children("span:nth-child(2)").html();
+   get_url = '/DataIngestion/measurement_list/'+db_name;
+   $('#db-name').html(db_name.toUpperCase());
+   
+   $.get(get_url, function(result){
+		result = JSON.parse(result);
+        ms_list =result['result'];
+		$('#ms-counter').html(ms_list.length);
+		$('#ms-list').empty();
+
+		ms_list.forEach(function(element){
+			domain = db_name.split("_")[0];
+   			sub_domain = db_name.slice(db_name.indexOf('_')+1,db_name.length);
+			var ms_item = make_name_onebutton(element, 'btn-secondary ms-item-btn', 'ms_item');
+			
+			if(check_selected(domain, sub_domain, element)){
+				ms_item.css("backgroundColor", SELECTED_BACKGROUND);
+				ms_item.css("borderColor", SELECTED_BACKGROUND);
+			}
+			
+			$('#ms-list').append(ms_item);
+		});
+	});	
+
+});
+
+
+$(document).on('click','.ms-item-btn', function(){
+   btn = $(this);
+   ms_name = btn.children("i").html();
+   domain = db_name.split("_")[0];
+   sub_domain = db_name.slice(db_name.indexOf('_')+1, db_name.length);
+   
+   // duplicate check
+   if(!(domain in selected_list)){
+		selected_list[domain] = {};
+		selected_list[domain][sub_domain] = [ms_name];
+		btn.css("backgroundColor", SELECTED_BACKGROUND);
+		btn.css("borderColor", SELECTED_BACKGROUND);
+   }
+   else{
+
+		if(!(sub_domain in selected_list[domain])){
+			selected_list[domain][sub_domain]=[ms_name];
+		}
+		else{
+			ms_idx = selected_list[domain][sub_domain].indexOf(ms_name);
+
+			if(ms_idx === -1){
+				selected_list[domain][sub_domain].push(ms_name);
+				btn.css("backgroundColor", SELECTED_BACKGROUND);
+				btn.css("borderColor", SELECTED_BACKGROUND);
+			
+			}else{
+				// alread selected => unselected
+				btn.css("backgroundColor", UNSELECTED_BACKGROUND);
+				btn.css("borderColor", UNSELECTED_BACKGROUND);
+				
+				make_unselected(db_name, ms_name,domain, sub_domain, ms_idx);
+				get_overlap_duration(selected_list,$("#time"));
+
+				return;
+			}
+		}
+   }
+   
+   var db_ms_item = $('<div>','</div >');
+   db_ms_item.addClass('ms_item_selected text-md text-dark mb-1')
+   db_span="<span class='db_name_s'>"+db_name+"</span>&nbsp;<span class='ms_name_s'>"+ms_name+"</span"
+   db_ms_item.html(db_span)
+   $('#selected-ms-list').append(db_ms_item)
+
+   get_overlap_duration(selected_list,$("#time"));
+})
+
+$( "#merge" ).click(function() {
+
+	$('#back_btn').css("display","none");
+	$("#model_info").html('Selected TARGET : <code id="target_show"></code>');
+	var intDataInfo={"db_info":[], };
+
+	$(".ms_item_selected").each(function() {
+		var nodes= $(this);
+		db_name_s = nodes.find(".db_name_s").html();
+		ms_name_s = nodes.find(".ms_name_s").html();
+		db_info_json ={"db_name":db_name_s, "measurement":ms_name_s};
+		intDataInfo['db_info'].push(db_info_json);
+	})
+
+	param = {'intDataInfo':intDataInfo, 'clean_param':true, 're_frequency_min':4, 'clean_data_type':'air'};
+	//console.log(param);
+
+	request_post(
+		GET_HASH_URL,
+		param,
+		function(result) {
+			$("#model_select_area").empty()
+			partial_dataset_hash = result.responseJSON["integration_info_id"]
+			my_architecture = hierarchy_dir[partial_dataset_hash]
+			if(my_architecture==undefined) {
+				return
+			}
+			targets = Object.keys(my_architecture)
+			init_model_select_area(targets)
+		}
+	)
+
+	
+})
+
+$( "#delete" ).click(function() {
+	$( "#selected-ms-list" ).empty();
+	$('#time').empty();
+	$('#histogram_set').empty();
+	selected_list = {};
+	nodes = $('#ms-list').children(".ms-item-btn");
+
+	nodes.each(function(){
+		$(this).css("backgroundColor", UNSELECTED_BACKGROUND);
+		$(this).css("borderColor", UNSELECTED_BACKGROUND);
+	});
+});
+
+</script>
+{% endblock %}

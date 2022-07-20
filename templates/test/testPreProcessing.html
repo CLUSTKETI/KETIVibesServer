@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+{% block content%}
+
+<link href={{url_for('static', filename="css/testPreProcessing.css" )}} rel="stylesheet">
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+<style>
+	#content {
+		overflow-x: scroll;
+	}
+</style>
+<div id="selectBoxArea"></div>
+<div class="container-fluid" id="init">
+
+	<div class="mb-3">
+
+		<button class="btn btn-primary" onclick="makeObj.init.addBlock('new');">
+			<i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;&nbsp;Add
+			block
+		</button>
+	</div>
+
+	<div id="loading-prograss" class="loading-prograss" style="display:none;">
+		<div class="spinner-border text-danger" role="status">
+			<span class="sr-only">Loading...</span>
+		</div>
+		<div class="text-danger">Loading Data</div>
+	</div>
+</div>
+{% endblock %}
+
+
+{% block script %}
+<script src={{url_for('static', filename="js/custom_ui.js" )}}></script>
+<script src={{url_for('static', filename="js/echarts.min.js" )}}></script>
+<script src={{url_for('static', filename="js/echart_manipulation.js" )}}></script>
+<script src={{url_for('static', filename="js/testPreProcessing.js" )}}></script>
+
+
+<script>
+
+
+</script>
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
+{% endblock %}

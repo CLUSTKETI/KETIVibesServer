@@ -1,0 +1,70 @@
+{ 
+   "schema":{ 
+      "collection":{ 
+         "type":"object",
+         "title":"Data_Storage",
+         "properties":{ 
+            "main_domain":{ 
+               "type":"string",
+               "required":true,
+               "title":"Main Domain *",
+               "enum":[
+                  "HealthCare",
+                  "Environment",
+                  "Farm",
+                  "Energy",
+                  "News",
+                  "Life",
+                  "Transportation",
+                  "Culture_Tourism",
+                  "Indoor_Air",
+                  "Outdoor_Air"
+               ]
+            },
+            "sub_domain":{
+               "type":"string",
+               "title":"Sub Domain",
+               "required":false
+            },
+            "select_time":{ 
+               "type":"string",
+               "required":true,
+               "title":"Selected Time Column Name*"
+            },
+            "location":{
+               "type":"string",
+               "required":false,
+               "title":"Location",
+               "description":"데이터 수집된 장소"
+            },
+            "description":{
+               "type":"string",
+               "required":false,
+               "title":"Description",
+               "description":"데이터 설명"
+            },
+            "source_agency":{ 
+               "type":"string",
+               "title":"Source Agency *",
+               "required":true
+            },
+            "collector":{ 
+               "type":"string",
+               "title":"Collector *",
+               "required":true
+            },
+            "source_type":{ 
+               "type":"string",
+               "title":"Source Type *",
+               "required":true
+            },            
+            "encoding":{
+               "type":"string",
+               "default":"None",
+               "title":"CSV Data Encoding",
+               "required":false
+            }
+         }
+      }
+   }
+}

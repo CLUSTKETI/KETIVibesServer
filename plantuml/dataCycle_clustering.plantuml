@@ -1,0 +1,135 @@
+@startuml dataCycle_clustering
+
+API -> dataCycleExploration.py : 파라미터 전달
+activate API #B7F0B1
+
+
+
+
+
+
+dataCycleExploration.py -> dataCycleExploration.py  : 각 파라미터 타입 변환
+activate dataCycleExploration.py #B2EBF4
+deactivate dataCycleExploration.py
+
+
+
+
+dataCycleExploration.py -> cycle_Module.py : 선택한 Cycle로 Data 나누기
+
+
+cycle_Module.py -> data_preprocessing.py : Time Frequency 맞추기
+activate data_preprocessing.py #B2EBF4
+cycle_Module.py <- data_preprocessing.py : refined Data
+deactivate data_preprocessing.py 
+
+cycle_Module.py -> cycle_Module.py : Cycle DataSet 생성
+activate cycle_Module.py #B2EBF4
+deactivate cycle_Module.py
+
+dataCycleExploration.py <- cycle_Module.py : Cycle DataSet
+
+
+
+
+dataCycleExploration.py -> clean_data_feature.py : All 데이터 처리
+activate clean_data_feature.py #AD8EDB
+
+clean_data_feature.py -> clean_data_feature.py : 데이터 전처리 및 사용 가능, 불가능 Data 분류
+activate clean_data_feature.py  #B2EBF4
+deactivate clean_data_feature.py 
+
+dataCycleExploration.py <- clean_data_feature.py : dataSet, ImputedDataSet
+deactivate clean_data_feature.py
+
+dataCycleExploration.py -> interface.py : Clustering - SOM
+activate interface.py #B2EBF4
+dataCycleExploration.py <- interface.py : result, figdata, figdata2
+deactivate interface.py
+
+
+
+
+API <- dataCycleExploration.py : result, figdata, figdata2
+deactivate API
+
+
+
+@enduml
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+' API -> dataCycleExploration.py : clusteringByCycle(dbModel.db_client, params, 'som')
+' activate API #B7F0B1
+
+
+
+
+
+
+' dataCycleExploration.py -> dataCycleExploration.py  : getDatawithParam(params)
+' activate dataCycleExploration.py #B2EBF4
+' deactivate dataCycleExploration.py
+
+' note left
+' [return]
+' db_name
+' ms_name
+' feature_name
+' NanInfoForCleanData
+' feature_list
+' freq_min
+' start_time
+' end_time
+' feature_cycle
+' feature_cycle_times
+' end note
+
+
+' dataCycleExploration.py -> cycle_Module.py : getCycleSelectDataSet(query_data, feature_cycle, feature_cycle_times)
+
+' cycle_Module.py -> cycle_Module.py : getCycleselectDataFrame(query_data, feature_cycle, feature_cycle_times)
+' activate cycle_Module.py #B2EBF4
+' deactivate cycle_Module.py
+
+' dataCycleExploration.py <-- cycle_Module.py : dataSet
+' note left
+' [dataset]
+' {'index_name1':data,'index_name2':data,...}
+' end note
+
+
+
+' dataCycleExploration.py -> clean_data_feature.py : getMultipleCleanDataSetsByFeature(dataSet, NanInfoForCleanData)
+
+' clean_data_feature.py -> clean_data_feature.py : getOneCleanDataSetByFeature(data, NanInfoForCleanData, duration)
+' activate clean_data_feature.py  #B2EBF4
+' deactivate clean_data_feature.py 
+
+' dataCycleExploration.py <-- clean_data_feature.py : dataSet, dataSetName, NaNRemovedDataSet, imputedDatasetName, ImputedDataSet
+
+
+' dataCycleExploration.py -> interface.py : clusteringByMethod(feature_dataset, feature_datasetName, model)
+' dataCycleExploration.py <-- interface.py : result, figdata, figdata2
+
+
+
+
+
+' API <- dataCycleExploration.py : result, figdata, figdata2
+' deactivate API

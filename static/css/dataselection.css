@@ -1,0 +1,114 @@
+.top_button_nav {
+    height: 550px;
+    overflow: scroll;
+}
+
+.btn-custom {
+    margin: 3px;
+    color: white;
+}
+
+.font-white {
+    color: white
+}
+
+#ms-list {
+    overflow: auto;
+    height: 9em;
+}
+
+.db_ms {
+    height: 15em
+}
+
+.round_border_button {
+    box-shadow: inset 0px 1px 3px 0px #276873;
+    background: linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
+    background-color: #599bb3;
+    border-radius: 5px;
+    border: 1px solid #29668f;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-size: 0.8em;
+    padding: 0.4em;
+    margin: 0.5em;
+    text-decoration: none;
+    text-shadow: 0px -1px 0px #3d768a;
+}
+
+.round_border_button:hover {
+    background: linear-gradient(to bottom, #408c99 5%, #599bb3 100%);
+    background-color: #408c99;
+}
+
+.round_border_button:active {
+    position: relative;
+    top: 1px;
+}
+
+.ms_item {
+    margin: 0.6em;
+}
+
+.center_inline {
+    text-align: center;
+}
+
+#merge {
+    margin: 10px
+}
+
+#analysis {
+    margin-top: 50px;
+}
+
+.btn-icon-split,
+.btn-sm {
+    margin: 8px;
+}
+
+.individual_column {
+    background-color: rgb(255, 255, 255);
+    border-top: 1px solid rgb(236, 236, 237);
+    flex: 1 1 auto;
+    overflow-x: auto;
+    min-height: 250px;
+    max-height: fit-content;
+    margin: 10px
+}
+
+.individual_column,
+.individual_column_histogram,
+.column_set {
+    padding: 10px;
+}
+
+.individual_column_explain {
+    border-top: 2mm ridge rgb(49 171 189);
+    padding: 20px;
+}
+
+.column_set {
+    padding: 20px;
+    background: #f4f6f7;
+    border-radius: 0px;
+    margin: 10px;
+    max-height: 500px;
+    overflow: scroll;
+}
+
+.card-body {
+    word-break: keep-all;
+}
+
+#loading-prograss {
+    z-index: 10;
+    position: absolute;
+    text-align: center;
+}
+
+.db_in_box {
+    overflow: auto;
+    height: 19em;
+}

@@ -1,0 +1,263 @@
+{% extends 'layout.html' %}
+{% block content%}
+
+<!-- Begin Page Content -->
+</style>
+<link href={{url_for('static', filename="css/visualization.css" )}} rel="stylesheet">
+
+<div id="selectBoxArea" class="mb-4"></div>
+<div class="container-fluid">
+	<div class="d-sm-flex align-items-center justify-content-between mb-3">
+		<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+			<div class="btn-group mr-2" role="group" aria-label="First group">
+				<button id="lableInformation_btn" class="btn btn-secondary rounded-0">
+					<span class="fas fa-sm text-white ms_item">Label Information</span>
+			</div>
+			<div class="btn-group mr-2" role="group" aria-label="Second group">
+				<button id="timeRelatedAnalysis_btn" class="btn btn-secondary 2nd_info rounded-0">
+					<span class="fas fa-sm text-white ms_item">Holiday</span></button>
+				<button id="timeRelatedAnalysis_btn" class="btn btn-secondary 2nd_info rounded-0">
+					<span class="fas fa-sm text-white ms_item">Work Time</span></button>
+				<button id="timeRelatedAnalysis_btn" class="btn btn-secondary 2nd_info rounded-0">
+					<span class="fas fa-sm text-white ms_item">Time Step</span></button>
+			</div>
+		</div>
+	</div>
+	<div class='row'>
+		<div class="col-xl-8 col-lg-8">
+			<div class="card shadow mb-4 rounded-0">
+				<div class="card-header text-dark py-3 d-flex flex-row align-items-center justify-content-between"
+					id="result_header">
+					<h4 class="m-0 font-weight-bold">
+						<span>
+							DB Name: <code id="db_name" class="result1"> None </code>
+							Measurement Name: <code id="ms_name" class="result1"> None </code>
+							Column Name: <code id="column_name" class="result1"> None </code>
+						</span>
+					</h4>
+				</div>
+				<div class="card-body" id="result_body">
+					<div id="data_feature_analysis_info" class="content">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xl-4 col-lg-4">
+			<div class="card border-left-dark shadow py-2 rounded-0">
+				<div class="card-body">
+					<div id="db_ms_column_info" class="content">
+						<div class="information_title">
+							<h4 class="mb-0 font-weight-bold title">Infomation
+								<hr>
+							</h4>
+						</div>
+						<div>
+							<h5 class="mb-2 middle_title">DataBase Info</h5>
+							<div id="db_info" class='highlight'></div>
+						</div>
+						<hr class="sidebar-divider" />
+						<div>
+							<h5 class="mb-2 middle_title">Measurement Info</h5>
+							<div id="ms_info" class='highlight'></div>
+						</div>
+						<hr class="sidebar-divider" />
+						<div>
+							<h5 class="mb-2 middle_title">Column Info</h5>
+							<div id="column_info" class='highlight'></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block script %}
+<script src={{url_for('static', filename="js/echart_dataFeature_visualization.js" )}}></script>
+<script src={{url_for('static', filename="js/custom_ui.js" )}}></script>
+<script src={{url_for('static', filename="js/echarts.min.js" )}}></script>
+<script>
+
+	const SELECTED_BACKGROUND = "crimson"
+	let empty_id_list = ['#db_name', '#ms_name', '#column_name'];
+
+	$(document).ready(function () {
+
+		let boxArr = ['domain', 'measurement', 'feature'];
+		const selectBoxes = makeSearchSelectBoxes(boxArr);
+		$("#selectBoxArea").html(selectBoxes);
+
+		let promise_1 = new Promise(
+
+			function (resolve, reject) {
+				$.get('/DataIngestion/db_list', function (result) {
+					result = JSON.parse(result)
+					db_list = result['result']
+					var feature1 = db_list;
+
+					makeSelect(feature1, 'domain', true);
+					resolve(feature1);
+				});
+			}
+		);
+
+		promise_1.then(
+
+			function (result) {
+				return new Promise(
+					function (resolve, reject) {
+						let get_url = '/DataIngestion/measurement_list/' + result[3];
+						//$("#domain").val(result[3]);
+
+						let result2, rsValue;
+
+						$.get(get_url, function (result2) {
+							empty_id_list = ['#db_name', '#ms_name', '#column_name', '#db_info', '#ms_info', '#column_info', '#data_feature_analysis_info'];
+							IDListEmpty(empty_id_list);
+
+							result2 = JSON.parse(result2);
+							ms_list = result2['result'];
+							makeSelect(ms_list, 'measurement');
+							rsValue = { "data1": result[3], "data2": result2['result'][0] };
+
+							//$('#db_name').html(result[3]);
+							//$('#ms_name').html(result2['result'][0]);
+							//$('#data_feature_analysis_info').empty();
+
+							resolve(rsValue);
+						})
+
+					});
+			}
+
+		).then(
+			function (result) {
+				const get_url = '/DataIngestion/featureList/' + result["data1"] + '/' + result["data2"];
+				$.get(get_url, function (result) {
+					result = JSON.parse(result);
+					feature_list = result["result"];
+					makeSelect(feature_list, 'feature');
+					//$('#column_name').html(feature_list[0]);
+
+					$("#submit").trigger("click");
+
+				});
+			}
+		)
+
+		$('#domain').on('change', function () {
+			empty_id_list = ['#db_name', '#ms_name', '#column_name', '#db_info', '#ms_info', '#column_info', '#data_feature_analysis_info'];
+			IDListEmpty(empty_id_list);
+
+			const selectedDB = this.value;
+			const get_url = '/DataIngestion/measurement_list/' + selectedDB;
+			$('#db_name').html(selectedDB);
+
+			$.get(get_url, function (result) {
+				result = JSON.parse(result)
+				ms_list = result['result'];
+				makeSelect(ms_list, 'measurement', true);
+				makeSelect([], 'feature');
+			})
+
+			$('#data_feature_analysis_info').empty();
+
+		});
+
+		$('#measurement').on('change', function () {
+			empty_id_list = ['#ms_name', '#column_name', '#ms_info', '#column_info', '#data_feature_analysis_info'];
+			IDListEmpty(empty_id_list);
+
+			const selectedDB = $('#domain').val();
+			const selectedMS = this.value;
+			const get_url = '/DataIngestion/featureList/' + selectedDB + '/' + selectedMS;
+			$('#ms_name').html(selectedMS);
+
+			$.get(get_url, function (result) {
+				result = JSON.parse(result)
+				feature_list = result["result"];
+				makeSelect(feature_list, 'feature', true);
+
+			})
+
+			$('#ms_name').html(selectedMS);
+		});
+
+		$('#feature').on('change', function () {
+			/*feature selectBox 변경 시*/
+			empty_id_list = ['#column_name', "#db_info", "#ms_info", '#column_info', '#data_feature_analysis_info'];
+			IDListEmpty(empty_id_list);
+
+			const selectedCO = this.value;
+			$('#column_name').html(selectedCO);
+
+			const db_name = $('#domain').val();
+			const ms_name = $('#measurement').val();
+
+		});
+
+		$("#submit").on("click", function () {
+
+			const select1 = $('#domain').val();
+			const select2 = $('#measurement').val();
+			const select3 = $('#feature').val();
+
+			empty_id_list = ['#db_info', '#ms_info', '#column_info', '#data_feature_analysis_info'];
+			IDListEmpty(empty_id_list);
+			DbMsColumnInfo("db_info", "ms_info", "column_info", select1, select2, select3, '/DataFeatureVisualization/db_ms_column_information');
+
+			$("#lableInformation_btn").trigger("click");
+
+		});
+
+		$(document).on('click', '#statistics_btn', function () {
+			//console.log("statistics_success");
+		});
+
+		$(document).on('click', '#lableInformation_btn, .2nd_info', function () {
+
+			const db_name = $('#domain').val();
+			const ms_name = $('#measurement').val();
+			const column = $('#feature').val();
+			let analyzer_name = '', time_key = '';
+
+			if (db_name == '선택' || ms_name == '선택' || column == '선택') {
+				alert("상단 데이터를 선택해 주세요.");
+				return;
+			}
+
+			const clicked_value = $(this).children().html();
+			//console.log(clicked_value);
+
+			if (clicked_value === "Label Information") {
+				analyzer_name = "CountByFeatureLabel";
+				time_key = "LabelInfo";
+			} else if (clicked_value === "Holiday") {
+				analyzer_name = "MeanByHoliday";
+				time_key = "holiday";
+			} else if (clicked_value === "Work Time") {
+				analyzer_name = "MeanByWorking";
+				time_key = "work";
+			} else if (clicked_value === "Time Step") {
+				analyzer_name = "MeanByTimeStep";
+				time_key = "time_step";
+			}
+
+			$('#data_feature_analysis_info').empty();
+
+			AnalysisResult("data_feature_analysis_info", db_name, ms_name, column, '/DataFeatureVisualization/features_meta', analyzer_name, time_key, clicked_value);
+		});
+
+		$(document).on('click', '#correlation_btn', function () {
+			console.log("correlation_success");
+		});
+
+
+	});
+
+
+
+
+</script>
+
+{% endblock %}
