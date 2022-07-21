@@ -79,7 +79,7 @@ class ModelInference(Resource):
         ``` json
             {
             "Result": 21.312096,
-            "Condition": "normal"
+            "Condition": "Good"
             }
         ```
 
