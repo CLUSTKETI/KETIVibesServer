@@ -61,39 +61,17 @@ class ModelInference(Resource):
         # ex. Input
         ``` json
         {
-          "data_value": [[21.403333333],
-       [21.421666667],
-       [21.401666667],
-       [21.39       ],
-       [21.375      ],
-       [21.321666667],
-       [21.300],
-       [21.28       ],
-       [21.223333333],
-       [21.200],
-       [21.200],
-       [21.200],
-       [21.200],
-       [21.200],
-       [21.196666667],
-       [21.165      ],
-       [21.19       ],
-       [21.191666667],
-       [21.200],
-       [21.27       ],
-       [21.336666667],
-       [21.400],
-       [21.453333333],
-       [21.500]],
-          "clean_param": "Clean",
-          "scaler_param": "scale",
-          "model_method": "gru",
-          "integrationFreq_min": 60,
-          "feature_col_list": ["O2percentage"],
-          "target_col": "O2percentage",
-          "dataInfo": [["farm_swine_air", "Sadle"]],
-          "future_step": 1,
-          "past_step": 24
+        "data_value": [[21.403333333], [21.421666667], [21.401666667], [21.39       ], [21.375      ], [21.321666667], [21.300], [21.28       ], [21.223333333], [21.200], [21.200],
+        [21.200], [21.200], [21.200], [21.196666667], [21.165      ], [21.19       ], [21.191666667], [21.200], [21.27       ], [21.336666667], [21.400], [21.453333333], [21.500]],
+        "clean_param": "Clean",
+        "scaler_param": "scale",
+        "model_method": "gru",
+        "integrationFreq_min": 60,
+        "feature_col_list": ["O2percentage"],
+        "target_col": "O2percentage",
+        "dataInfo": [["farm_swine_air", "Sadle"]],
+        "future_step": 1,
+        "past_step": 24
         }
         ```
 
@@ -287,6 +265,7 @@ def checkResultCondition(inference_result, element_name):
             condition = 'Danger'
         else:
             condition ='Error'
+
 
 
     finalResult ={'Result':inference_result, 'Condition':condition}
