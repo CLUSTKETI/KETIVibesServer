@@ -228,53 +228,53 @@ def dataPathParameter(params):
 def checkResultCondition(inference_result, element_name):
     if element_name == 'COppm':
         if inference_result <= 1.74:
-            condition = 'good'
+            condition = 'Good'
         elif inference_result >= 1.75 and inference_result <= 7.85:
-            condition = 'normal'
+            condition = 'Normal'
         elif inference_result >= 7.86 and inference_result <= 13.09:
-            condition = 'bad'
+            condition = 'Bad'
         else:
-            condition = 'very bad'
+            condition = 'Danger'
 
     elif element_name == 'H2Sppm':
         if inference_result <= 0.07:
-            condition = 'good'
+            condition = 'Good'
         elif inference_result >= 0.08 and inference_result <= 0.50:
-            condition = 'normal'
+            condition = 'Normal'
         elif inference_result >= 0.51 and inference_result <= 1.99:
-            condition = 'bad'
+            condition = 'Bad'
         else:
-            condition = 'very bad'
+            condition = 'Danger'
 
     elif element_name == 'NH3ppm':
         if inference_result <= 4.4:
-            condition = 'good'
+            condition = 'Good'
         elif inference_result >= 4.5 and inference_result <= 20.0:
-            condition = 'normal'
+            condition = 'Normal'
         elif inference_result >= 20.1 and inference_result <= 49.9:
-            condition = 'bad'
+            condition = 'Bad'
         else:
-            condition = 'very bad'
+            condition = 'Danger'
 
     elif element_name == 'NO2ppm':
         if inference_result <= 0.011:
-            condition = 'good'
+            condition = 'Good'
         elif inference_result >= 0.012 and inference_result <= 0.027:
-            condition = 'normal'
+            condition = 'Normal'
         elif inference_result >= 0.028 and inference_result <= 0.08:
-            condition = 'bad'
+            condition = 'Bad'
         else:
-            condition = 'very bad'
+            condition = 'Danger'
 
     elif element_name == 'O2percentage':
         if inference_result <= 23.0:
-            condition = 'good'
+            condition = 'Good'
         elif inference_result >= 18.01 and inference_result <= 22.99:
-            condition = 'normal'
+            condition = 'Normal'
         elif inference_result >= 15.01 and inference_result <= 18.0:
-            condition = 'bad'
+            condition = 'Bad'
         else:
-            condition = 'very bad'
+            condition = 'Danger'
 
 
     finalResult ={'Result':inference_result, 'Condition':condition}
