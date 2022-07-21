@@ -60,37 +60,37 @@ class ModelInference(Resource):
         # ex. Input
         ``` json
         {
-          "data_value": [[214.03333333],
-       [214.21666667],
-       [214.01666667],
-       [213.9       ],
-       [213.75      ],
-       [213.21666667],
-       [213.00],
-       [212.8       ],
-       [212.23333333],
-       [212.00],
-       [212.00],
-       [212.00],
-       [212.00],
-       [212.00],
-       [211.96666667],
-       [211.65      ],
-       [211.9       ],
-       [211.91666667],
-       [212.00],
-       [212.7       ],
-       [213.36666667],
-       [214.00],
-       [214.53333333],
-       [215.00]],
+          "data_value": [[21.403333333],
+       [21.421666667],
+       [21.401666667],
+       [21.39       ],
+       [21.375      ],
+       [21.321666667],
+       [21.300],
+       [21.28       ],
+       [21.223333333],
+       [21.200],
+       [21.200],
+       [21.200],
+       [21.200],
+       [21.200],
+       [21.196666667],
+       [21.165      ],
+       [21.19       ],
+       [21.191666667],
+       [21.200],
+       [21.27       ],
+       [21.336666667],
+       [21.400],
+       [21.453333333],
+       [21.500]],
           "clean_param": "Clean",
           "scaler_param": "scale",
           "model_method": "gru",
           "integrationFreq_min": 60,
-          "feature_col_list": ["O2/value"],
-          "target_col": "O2/value",
-          "dataInfo": [["farm_swine_air", "sadle"]],
+          "feature_col_list": ["O2percentage"],
+          "target_col": "O2percentage",
+          "dataInfo": [["farm_swine_air", "Sadle"]],
           "future_step": 1,
           "past_step": 24
         }
@@ -127,7 +127,6 @@ def dataInference(params):
     """
     data_value = params['data_value']
     data_value = np.array(data_value)
-    data_value = data_value.cpu().numpy()
     cleanParam = params['clean_param']
     scalerParam = params['scaler_param']
     scale_method = 'minmax'
@@ -227,7 +226,7 @@ def dataPathParameter(params):
 
 
 def checkResultCondition(inference_result, element_name):
-    if element_name == 'CO/value':
+    if element_name == 'COppm':
         if inference_result <= 1.74:
             condition = 'good'
         elif inference_result >= 1.75 and inference_result <= 7.85:
@@ -237,7 +236,7 @@ def checkResultCondition(inference_result, element_name):
         else:
             condition = 'very bad'
 
-    elif element_name == 'H2S/value':
+    elif element_name == 'H2Sppm':
         if inference_result <= 0.07:
             condition = 'good'
         elif inference_result >= 0.08 and inference_result <= 0.50:
@@ -247,7 +246,7 @@ def checkResultCondition(inference_result, element_name):
         else:
             condition = 'very bad'
 
-    elif element_name == 'NH3/value':
+    elif element_name == 'NH3ppm':
         if inference_result <= 4.4:
             condition = 'good'
         elif inference_result >= 4.5 and inference_result <= 20.0:
@@ -257,7 +256,7 @@ def checkResultCondition(inference_result, element_name):
         else:
             condition = 'very bad'
 
-    elif element_name == 'NO2/value':
+    elif element_name == 'NO2ppm':
         if inference_result <= 0.011:
             condition = 'good'
         elif inference_result >= 0.012 and inference_result <= 0.027:
@@ -267,7 +266,7 @@ def checkResultCondition(inference_result, element_name):
         else:
             condition = 'very bad'
 
-    elif element_name == 'O2/value':
+    elif element_name == 'O2percentage':
         if inference_result <= 23.0:
             condition = 'good'
         elif inference_result >= 18.01 and inference_result <= 22.99:
