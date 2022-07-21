@@ -99,8 +99,8 @@ class ModelInference(Resource):
         # ex. Output
         ``` json
             {
-            "Result": 213.67172241210938,
-            "Condition": "very bad"
+            "Result": 21.312096,
+            "Condition": "normal"
             }
         ```
 
@@ -127,6 +127,7 @@ def dataInference(params):
     """
     data_value = params['data_value']
     data_value = np.array(data_value)
+    data_value = data_value.cpu().numpy()
     cleanParam = params['clean_param']
     scalerParam = params['scaler_param']
     scale_method = 'minmax'
