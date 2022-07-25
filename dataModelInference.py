@@ -87,6 +87,8 @@ class ModelInference(Resource):
         params = request.json
         inference_result = dataInference(params)
         element_name = params['target_col']
+        if inference_result < 0.0:
+            inference_result = 0.0
         finalResult = checkResultCondition(inference_result, element_name)
 
         return finalResult
@@ -206,52 +208,48 @@ def dataPathParameter(params):
 
 def checkResultCondition(inference_result, element_name):
     if element_name == 'COppm':
-        if inference_result <= 1.74 and inference_result >= 0.0 :
+        if inference_result <= 1.74:
             condition = 'Good'
         elif inference_result >= 1.75 and inference_result <= 7.85:
             condition = 'Normal'
         elif inference_result >= 7.86 and inference_result <= 13.09:
             condition = 'Bad'
-        elif inference_result >= 13.10:
-            condition = 'Danger'
         else:
-            condition ='Error'
+            condition = 'Danger'
+
 
     elif element_name == 'H2Sppm':
-        if inference_result <= 0.07 and inference_result >= 0.0:
+        if inference_result <= 0.07:
             condition = 'Good'
         elif inference_result >= 0.08 and inference_result <= 0.50:
             condition = 'Normal'
         elif inference_result >= 0.51 and inference_result <= 1.99:
             condition = 'Bad'
-        elif inference_result >= 2.0:
-            condition = 'Danger'
         else:
-            condition ='Error'
+            condition = 'Danger'
+
 
     elif element_name == 'NH3ppm':
-        if inference_result <= 4.4 and inference_result >= 0.0:
+        if inference_result <= 4.4:
             condition = 'Good'
         elif inference_result >= 4.5 and inference_result <= 20.0:
             condition = 'Normal'
         elif inference_result >= 20.1 and inference_result <= 49.9:
             condition = 'Bad'
-        elif inference_result >= 50.0:
-            condition = 'Danger'
         else:
-            condition ='Error'
+            condition = 'Danger'
+
 
     elif element_name == 'NO2ppm':
-        if inference_result <= 0.011 and inference_result >= 0.0:
+        if inference_result <= 0.011:
             condition = 'Good'
         elif inference_result >= 0.012 and inference_result <= 0.027:
             condition = 'Normal'
         elif inference_result >= 0.028 and inference_result <= 0.08:
             condition = 'Bad'
-        elif inference_result >= 0.081:
-            condition = 'Danger'
         else:
-            condition ='Error'
+            condition = 'Danger'
+
 
 
     elif element_name == 'O2percentage':
@@ -261,11 +259,8 @@ def checkResultCondition(inference_result, element_name):
             condition = 'Normal'
         elif inference_result >= 15.01 and inference_result <= 18.0:
             condition = 'Bad'
-        elif inference_result >= 12.1 and inference_result <= 15.00:
-            condition = 'Danger'
         else:
-            condition ='Error'
-
+            condition = 'Danger'
 
 
     finalResult ={'Result':inference_result, 'Condition':condition}
