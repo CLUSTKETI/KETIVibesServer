@@ -1,9 +1,0 @@
-{
-    "DB_INFO":{
-        "USER_ID":"test",
-        "USER_PWD":"test",
-        "HOST_ADDR":"localhost",
-        "HOST_PORT":27017,
-        "DB_NAME":"test"
-    }
-}
