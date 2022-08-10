@@ -1,4 +1,3 @@
-from cmath import inf
 from flask import request
 from flask_restx import Resource, Namespace, reqparse
 from flask import render_template, make_response
@@ -10,9 +9,10 @@ import json
 sys.path.append("../")
 sys.path.append("../../")
 
-from KETIToolDL.CLUSTTool.common import p1_integratedDataSaving as p1
-from KETIToolDL.CLUSTTool.common import p2_dataSelection as p2
-from KETIToolDL.CLUSTTool.RNNPrediction import p5_inference as p5
+import p1_integratedDataSaving as p1
+import p2_dataSelection as p2
+
+import p5_inference as p5
 import pathSetting
 
 

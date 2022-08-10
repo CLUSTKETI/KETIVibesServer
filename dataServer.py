@@ -16,11 +16,11 @@ app.secret_key = "super secret key"
 api = Api(app)
 
 
-from KETIVibesServer.dataModelInference import DataModelInference
+from dataModelInference import DataModelInference
 api.add_namespace(DataModelInference)
 
 
-from KETIAppDataServer.forecastingInference import ForecastingInference
+from forecastingInference import ForecastingInference
 api.add_namespace(ForecastingInference)
 
 
