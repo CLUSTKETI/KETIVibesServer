@@ -70,8 +70,8 @@ class ModelInference(Resource):
                 [212.00      ],
                 [212.03333333],
                 [212.00      ]],
-            "featureList": ["O2/value"],
-            "target_col": "O2/value",
+            "featureList": ["O2percentage"],
+            "target_col": "O2percentage",
             "cleanParam": "Clean"
         }
         """
@@ -101,6 +101,7 @@ def dataInference(params):
 
     ModelMeta = p1.readJsonData(trainModelMetaFilePath)
     modelName = findModelName(target_col, cleanParam, ModelMeta)
+    print(modelName)
 
 
     scalerFilePath = ModelMeta[modelName]['files']['scalerFile']["filePath"]
@@ -116,17 +117,16 @@ def dataInference(params):
 
 
 
-
+#global m_name
 def findModelName(target_col, cleanParam, ModelMeta):
     
     modelList = list(ModelMeta.keys())
 
-    for i in modelList:
-        if target_col == ModelMeta[i]["transformParameter"]["target_col"]:
-            if cleanParam == ModelMeta[i]["trainDataInfo"]["cleanParam"]:
-                modelName = i
+    for name in modelList:
+        if target_col == ModelMeta[name]["transformParameter"]["target_col"]:
+            if cleanParam == ModelMeta[name]["trainDataInfo"]["cleanParam"]:
+                return name
 
-    return modelName
 
 
 
